@@ -69,7 +69,7 @@ class RestartBot(commands.Bot):
         
         await asyncio.sleep(5)
         await self.execute_saved_command()
-        self.bot.loop.create_task(self.monitor_restart())
+        self.loop.create_task(self.monitor_restart())
 
     async def execute_saved_command(self):
         if self.command_sent:
