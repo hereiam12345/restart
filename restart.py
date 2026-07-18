@@ -88,14 +88,18 @@ class RestartBot(commands.Bot):
             return
         
         try:
-            await asyncio.sleep(5)  #  Wait before sending
+            await asyncio.sleep(3)
             target_user = await self.fetch_user(user_id)
             if target_user:
                 await target_user.send(command)
-                print(f" Command executed: `{command}`")
+                print(f" Command sent to DM: `{command}`")
+            else:
+                print("❌ Could not find target user.")
+        except discord.errors.Forbidden as e:
+            print(f"❌ Forbidden: {e} - Check token and permissions")
         except Exception as e:
-            print(f" Failed to send command: {e}")
-
+            print(f"❌ Failed to send command: {e}")
+        
     async def monitor_restart(self):
         await self.wait_until_ready()
         while True:
