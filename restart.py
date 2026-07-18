@@ -16,7 +16,6 @@ CHECK_INTERVAL = 30
 
 def load_state():
     try:
-        os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
         if not os.path.exists(STATE_FILE):
             # Only create if it doesn't exist
             with open(STATE_FILE, "w") as f:
