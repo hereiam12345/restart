@@ -11,22 +11,30 @@ if not TOKEN:
     print(" Please set the TOKEN environment variable.")
     exit(1)
 
-STATE_FILE = "data/restart_state.json"
+STATE_FILE = "restart_state.json"
 CHECK_INTERVAL = 30
 
 def load_state():
     try:
         os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
         if not os.path.exists(STATE_FILE):
+            # Only create if it doesn't exist
             with open(STATE_FILE, "w") as f:
                 json.dump({}, f)
             return {}
         with open(STATE_FILE, "r") as f:
-            return json.load(f)
+            content = f.read().strip()
+            if not content:
+                return {}
+            return json.loads(content)
+    except json.JSONDecodeError:
+        #  If file is corrupted, DON'T overwrite, just return empty
+        return {}
     except:
         return {}
 
 def save_state(state):
+    #  Only writes when user saves, never on load
     os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, indent=4)
