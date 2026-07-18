@@ -33,7 +33,7 @@ class RestartBot(commands.Bot):
         self.state = load_state()
 
     async def setup_hook(self):
-        await self.register_commands()
+        self.register_commands()
 
     def register_commands(self):
         @self.command(name='save')
