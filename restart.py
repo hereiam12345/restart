@@ -46,11 +46,11 @@ class RestartBot(commands.Bot):
             save_state(self.state)
             await ctx.send(f" Command saved: `{command}`")
 
-        @self.command(name='id')
-        async def save_id(ctx, user_id: int):
-            self.state["user_id"] = user_id
+        @self.command(name='channel')
+        async def save_channel(ctx, channel_id: int):
+            self.state["channel_id"] = channel_id
             save_state(self.state)
-            await ctx.send(f" User ID saved: `{user_id}`")
+            await ctx.send(f" Channel ID saved: `{channel_id}`")
 
         @self.command(name='status')
         async def show_status(ctx):
@@ -82,23 +82,36 @@ class RestartBot(commands.Bot):
         
         command = self.state.get("command")
         user_id = self.state.get("user_id")
+        channel_id = self.state.get("channel_id")
         
-        if not command or not user_id:
-            print(" No command or user ID saved. Use .save and .id")
+        if not command:
+            print(" No command saved. Use .save")
             return
         
-        try:
-            await asyncio.sleep(3)
-            target_user = await self.fetch_user(user_id)
-            if target_user:
-                await target_user.send(command)
-                print(f" Command sent to DM: `{command}`")
-            else:
-                print("❌ Could not find target user.")
-        except discord.errors.Forbidden as e:
-            print(f"❌ Forbidden: {e} - Check token and permissions")
-        except Exception as e:
-            print(f"❌ Failed to send command: {e}")
+        # Try channel first, then user
+        if channel_id:
+            channel = self.get_channel(channel_id)
+            if channel:
+                try:
+                    await channel.send(command)
+                    print(f" Command sent to channel: `{command}`")
+                    return
+                except Exception as e:
+                    print(f" Failed to send to channel: {e}")
+        
+        if user_id:
+            try:
+                target_user = await self.fetch_user(user_id)
+                if target_user:
+                    await target_user.send(command)
+                    print(f" Command sent to DM: `{command}`")
+                    return
+            except discord.errors.Forbidden as e:
+                print(f" Forbidden: {e}")
+            except Exception as e:
+                print(f" Failed to send to DM: {e}")
+        
+        print(" No valid target (channel or user) found")
         
     async def monitor_restart(self):
         await self.wait_until_ready()
