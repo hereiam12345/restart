@@ -58,7 +58,7 @@ class RestartBot(commands.Bot):
             msg = f"** Restart Monitor Status:**\n"
             msg += f"Uptime: {int(time.time() - self.start_time)}s\n"
             msg += f"Saved Command: `{state.get('command', 'None')}`\n"
-            msg += f"Target User: <@{state.get('user_id', 'None')}>"
+            msg += f"Target ch_id: <@{state.get('channel_id', 'None')}>"
             await ctx.send(msg)
 
         @self.command(name='clear')
