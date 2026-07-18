@@ -16,12 +16,14 @@ CHECK_INTERVAL = 30
 
 def load_state():
     try:
+        os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
         with open(STATE_FILE, "r") as f:
             return json.load(f)
     except:
         return {}
 
 def save_state(state):
+    os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, indent=4)
 
