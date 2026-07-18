@@ -17,7 +17,6 @@ CHECK_INTERVAL = 30
 def load_state():
     try:
         if not os.path.exists(STATE_FILE):
-            # Only create if it doesn't exist
             with open(STATE_FILE, "w") as f:
                 json.dump({}, f)
             return {}
@@ -27,14 +26,11 @@ def load_state():
                 return {}
             return json.loads(content)
     except json.JSONDecodeError:
-        #  If file is corrupted, DON'T overwrite, just return empty
         return {}
     except:
         return {}
 
 def save_state(state):
-    #  Only writes when user saves, never on load
-    os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, indent=4)
 
