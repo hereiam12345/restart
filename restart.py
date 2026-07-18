@@ -11,7 +11,7 @@ if not TOKEN:
     print(" Please set the TOKEN environment variable.")
     exit(1)
 
-STATE_FILE = "restart_state.json"
+STATE_FILE = "data/restart_state.json"
 CHECK_INTERVAL = 30
 
 def load_state():
@@ -21,12 +21,7 @@ def load_state():
                 json.dump({}, f)
             return {}
         with open(STATE_FILE, "r") as f:
-            content = f.read().strip()
-            if not content:
-                return {}
-            return json.loads(content)
-    except json.JSONDecodeError:
-        return {}
+            return json.load(f)
     except:
         return {}
 
